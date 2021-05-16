@@ -43,7 +43,7 @@ def clean_and_stem(text):
 # Endpoints
 class ComplaintClassifier(Resource):
     def get(self):
-        return {'Welcome!': 'This is the API endpoint of my capstone project! Please use a POST request at /predict to get the classification labels .'}
+        return {'Welcome!': 'This is the API endpoint of my capstone project! Please use a POST request at https://capstone-classifier.herokuapp.com//predict to get the classification labels .'}
 
 api.add_resource(ComplaintClassifier, '/')
 
