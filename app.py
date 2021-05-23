@@ -103,7 +103,7 @@ class GetVaccineDetails(Resource):
     def get(self):
         args = parser.parse_args()
         print(args)
-        district_id = str(args['district_id'])
+        district_id = args['district_id']
         query_date = args['date']
 
         if not query_date:
