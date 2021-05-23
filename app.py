@@ -71,7 +71,17 @@ def get_vaccine_details(district_id, query_date):
 # Endpoints
 class ComplaintClassifier(Resource):
     def get(self):
-        return {'Welcome!': 'This is the API endpoint of my capstone project! Please use a POST request at https://capstone-classifier.herokuapp.com/predict to get the classification labels .'}
+        return {'Welcome!': '''
+        This is the API endpoint of our capstone project, Smart Citizen App!
+
+        Available APIs:
+        POST    https://capstone-classifier.herokuapp.com/predict  Parameters: text_query
+        GET     https://capstone-classifier.herokuapp.com/get-vaccine-details Parameters: district_id
+        GET     https://capstone-classifier.herokuapp.com/get-clusters
+        GET     https://capstone-classifier.herokuapp.com/cases-update
+
+
+        '''}
 
 # TODO: Put this in a try except block to report errors
 
@@ -137,11 +147,15 @@ class CasesUpdate(Resource):
         return {'cases' : res,
                 'date' : datetime.today().strftime("%d-%m-%Y")}
 
-api.add_resource(ComplaintClassifier, '/')
+api.add_resource(ComplaintClassifier, '/api')
 api.add_resource(PredictClass, '/predict')
 api.add_resource(GetVaccineDetails, '/get-vaccine-details') #idk why is this not working
 api.add_resource(GetClusters, '/get-clusters')
 api.add_resource(CasesUpdate, '/cases-update')
+
+@app.route("/")
+def index():
+    return render_template("index.html")
 
 if __name__ == '__main__':
     port = 5000
