@@ -58,10 +58,12 @@ def get_vaccine_details(district_id, query_date):
     req_url = BASE_URL.format(district_id,query_date)
     print(req_url)
     response = requests.get(req_url,headers=HEADERS)
-    response_df = pd.DataFrame(response.json()['sessions'])
-    response_df = response_df[COLUMNS]
-    return response_df.to_json(orient="split")
+    if response:
+        response_df = pd.DataFrame(response.json()['sessions'])
+        response_df = response_df[COLUMNS]
+        return response_df.to_json(orient="split")
 
+    return {'error' : 'No details found'}
 # Endpoints
 class ComplaintClassifier(Resource):
     def get(self):
