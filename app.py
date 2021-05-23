@@ -37,6 +37,8 @@ parser.add_argument('date')
 MODEL_PATH = './model/RandomForest.pkl'
 BASE_URL = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?district_id={}&date={}"
 HEADERS = {
+':authority': 'cdn-api.co-vin.in',
+':scheme' : 'https',
 'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
 'accept-encoding': 'gzip, deflate, br',
 'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
@@ -63,7 +65,8 @@ def get_vaccine_details(district_id, query_date):
         response_df = response_df[COLUMNS]
         return response_df.to_json(orient="split")
 
-    return {'error' : 'No details found'}
+    return {'error' : 'No details found',
+            'response' response}
 # Endpoints
 class ComplaintClassifier(Resource):
     def get(self):
