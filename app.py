@@ -38,7 +38,8 @@ parser.add_argument('cluster_data')
 MODEL_PATH = './model/RandomForest.pkl'
 BEARER_TOKEN = 'pec_capstone_group_12'
 BASE_URL = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?district_id={}&date={}"
-HEADERS = { 'Authorization': 'Bearer {}'.format(BEARER_TOKEN),
+# 'Authorization': 'Bearer {}'.format(BEARER_TOKEN),
+HEADERS = {
 'authority': 'cdn-api.co-vin.in',
 'scheme': 'https',
 'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
