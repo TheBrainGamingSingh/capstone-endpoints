@@ -67,7 +67,7 @@ def get_vaccine_details(district_id, query_date):
         return response_df.to_json(orient="split")
 
     return {'error' : 'No details found',
-            'response': response}
+            'response': str(response)}
 # Endpoints
 class ComplaintClassifier(Resource):
     def get(self):
@@ -139,7 +139,7 @@ class CasesUpdate(Resource):
 
 api.add_resource(ComplaintClassifier, '/')
 api.add_resource(PredictClass, '/predict')
-api.add_resource(GetVaccineDetails, '/get-vaccine-details')
+api.add_resource(GetVaccineDetails, '/get-vaccine-details') #idk why is this not working
 api.add_resource(GetClusters, '/get-clusters')
 api.add_resource(CasesUpdate, '/cases-update')
 
