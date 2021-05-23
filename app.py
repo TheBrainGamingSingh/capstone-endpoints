@@ -38,8 +38,8 @@ parser.add_argument('cluster_data')
 MODEL_PATH = './model/RandomForest.pkl'
 BASE_URL = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?district_id={}&date={}"
 HEADERS = {
-':authority': 'cdn-api.co-vin.in',
-':scheme' : 'https',
+'authority': 'cdn-api.co-vin.in',
+'scheme' : 'https',
 'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
 'accept-encoding': 'gzip, deflate, br',
 'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
@@ -125,11 +125,23 @@ class GetClusters(Resource):
         print(args)
         return {'cluster_data' : 'test'}
 
+class CasesUpdate(Resource):
+    def get(self):
+        url = 'https://api.covid19india.org/v4/min/timeseries.min.json'
+
+        res = requests.get(url)
+        res = res.json()['CH']['dates']
+        res = res[list(sorted(res.keys()))[-1]]['total']
+        res['active'] = res['confirmed'] - res['recovered'] - res['deceased']
+
+        return {'cases' : res,
+                'date' : datetime.today().strftime("%d-%m-%Y")}
 
 api.add_resource(ComplaintClassifier, '/')
 api.add_resource(PredictClass, '/predict')
 api.add_resource(GetVaccineDetails, '/get-vaccine-details')
 api.add_resource(GetClusters, '/get-clusters')
+api.add_resource(CasesUpdate, '/cases-update')
 
 if __name__ == '__main__':
     port = 5000
