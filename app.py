@@ -33,6 +33,7 @@ parser = reqparse.RequestParser()
 parser.add_argument('query')
 parser.add_argument('district_id')
 parser.add_argument('date')
+parser.add_argument('cluster_data')
 
 MODEL_PATH = './model/RandomForest.pkl'
 BASE_URL = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?district_id={}&date={}"
@@ -66,7 +67,7 @@ def get_vaccine_details(district_id, query_date):
         return response_df.to_json(orient="split")
 
     return {'error' : 'No details found',
-            'response' response}
+            'response': response}
 # Endpoints
 class ComplaintClassifier(Resource):
     def get(self):
@@ -118,9 +119,17 @@ class GetVaccineDetails(Resource):
 
         return get_vaccine_details(district_id,query_date)
 
+class GetClusters(Resource):
+    def get(self):
+        args = parser.parse_args()
+        print(args)
+        return {'cluster_data' : 'test'}
+
+
 api.add_resource(ComplaintClassifier, '/')
 api.add_resource(PredictClass, '/predict')
 api.add_resource(GetVaccineDetails, '/get-vaccine-details')
+api.add_resource(GetClusters, '/get-clusters')
 
 if __name__ == '__main__':
     port = 5000
