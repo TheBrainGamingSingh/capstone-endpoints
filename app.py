@@ -12,6 +12,7 @@ from flask import Flask, render_template, url_for, make_response
 import flask.scaffold
 flask.helpers._endpoint_from_view_func = flask.scaffold._endpoint_from_view_func
 ##
+
 from flask_restful import reqparse, abort, Api, Resource
 import pickle
 import json
@@ -30,7 +31,7 @@ words = stopwords.words("english")
 app = Flask(__name__)
 api = Api(app)
 parser = reqparse.RequestParser()
-parser.add_argument('query')
+parser.add_argument('text_query')
 parser.add_argument('district_id')
 parser.add_argument('date')
 parser.add_argument('cluster_data')
@@ -38,11 +39,9 @@ parser.add_argument('cluster_data')
 MODEL_PATH = './model/RandomForest.pkl'
 BEARER_TOKEN = 'pec_capstone_group_12'
 BASE_URL = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?district_id={}&date={}"
-# 'Authorization': 'Bearer {}'.format(BEARER_TOKEN),
 HEADERS = {
 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36'
 }
-
 COLUMNS = ['vaccine','center_id', 'name','address','min_age_limit','pincode','available_capacity_dose1','available_capacity_dose2']
 
 
@@ -55,7 +54,6 @@ with open("./data/mapper.json") as infile:
 def clean_and_stem(text):
     return [" ".join([stemmer.stem(i) for i in re.sub("[^a-zA-Z]", " ", x).split() if i not in words]).lower() for x in [text]]
 
-
 def get_vaccine_details(district_id, query_date):
     req_url = BASE_URL.format(district_id,query_date)
     print(req_url)
@@ -67,15 +65,32 @@ def get_vaccine_details(district_id, query_date):
     except:
         return {'error' : 'No details found',
             'response': str(response.text)}
+
+
+# end of utility fuctions
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Endpoints
 class ComplaintClassifier(Resource):
     '''render a template here'''
     def get(self):
         return {'Welcome!': '''
-        This is the API endpoint of our capstone project, Smart Citizen App!
+
 
         Available APIs:
-        GET    https://capstone-classifier.herokuapp.com/predict  Parameters: text_query
+        GET     https://capstone-classifier.herokuapp.com/predict  Parameters: text_query
         GET     https://capstone-classifier.herokuapp.com/get-vaccine-details Parameters: district_id
         GET     https://capstone-classifier.herokuapp.com/get-clusters
         GET     https://capstone-classifier.herokuapp.com/cases-update
@@ -89,10 +104,15 @@ class PredictClass(Resource):
     def get(self):
         args = parser.parse_args()
         print(args)
-        text_query = str(args['query'])
+
+        text_query = args['text_query']
+
+        if not text_query:
+            return {'error' : 'argument text_query not found'}
+
+        text_query = str(text_query)
         print(text_query)
         user_query = clean_and_stem(text_query)
-
 
         label = model.predict(user_query)[0]
         probs = model.predict_proba(user_query)[0]
@@ -129,12 +149,6 @@ class GetVaccineDetails(Resource):
 
         return get_vaccine_details(district_id,query_date)
 
-class GetClusters(Resource):
-    def get(self):
-        args = parser.parse_args()
-        print(args)
-        return {'cluster_data' : 'test'}
-
 class CasesUpdate(Resource):
     def get(self):
         url = 'https://api.covid19india.org/v4/min/timeseries.min.json'
@@ -146,6 +160,12 @@ class CasesUpdate(Resource):
 
         return {'cases' : res,
                 'date' : datetime.today().strftime("%d-%m-%Y")}
+
+class GetClusters(Resource):
+    def get(self):
+        args = parser.parse_args()
+        print(args)
+        return {'cluster_data' : 'test'}
 
 api.add_resource(ComplaintClassifier, '/api/')
 api.add_resource(PredictClass, '/api/predict-class')
