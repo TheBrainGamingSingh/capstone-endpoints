@@ -40,6 +40,8 @@ MODEL_PATH = './model/RandomForest.pkl'
 BEARER_TOKEN = 'pec_capstone_group_12'
 BASE_URL = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?district_id={}&date={}"
 HEADERS = {
+'origin': 'https://www.cowin.gov.in',
+'referer': 'https://www.cowin.gov.in/',
 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36'
 }
 COLUMNS = ['vaccine','center_id', 'name','address','min_age_limit','pincode','available_capacity_dose1','available_capacity_dose2']
@@ -61,7 +63,8 @@ def get_vaccine_details(district_id, query_date):
     try:
         response_df = pd.DataFrame(response.json()['sessions'])
         response_df = response_df[COLUMNS]
-        return response_df.to_json(orient="split")
+        res_output = response_df.to_dict(orient='index',)
+        return {'details' : res_output}
     except:
         return {'error' : 'No details found',
             'response': str(response.text)}
