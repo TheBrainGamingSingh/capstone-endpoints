@@ -86,17 +86,32 @@ def get_vaccine_details(district_id, query_date):
 class ComplaintClassifier(Resource):
     '''render a template here'''
     def get(self):
-        return {'Welcome!': '''
+        return {"apis-available" : {
+          "predict-class": {
+            "method" : "GET",
+            "endpoint" : "https://capstone-classifier.herokuapp.com/api/predict-class",
+            "params": "text_query"
+          },
 
+          "get-vaccine-details": {
+            "method" : "GET",
+            "endpoint" : "https://capstone-classifier.herokuapp.com/api/get-vaccine-details",
+            "params": ["district_id", "date"]
+          },
 
-        Available APIs:
-        GET     https://capstone-classifier.herokuapp.com/predict  Parameters: text_query
-        GET     https://capstone-classifier.herokuapp.com/get-vaccine-details Parameters: district_id
-        GET     https://capstone-classifier.herokuapp.com/get-clusters
-        GET     https://capstone-classifier.herokuapp.com/cases-update
+           "get-cases-update": {
+            "method" : "GET",
+            "endpoint" : "https://capstone-classifier.herokuapp.com/api/get-cases-update",
+            "params": None
+          },
 
+           "get-clusters": {
+            "method" : "GET",
+            "endpoint" : "https://capstone-classifier.herokuapp.com/api/get-clusters",
+            "params": "cluster_data"
+          }
+        }}
 
-        '''}
 
 # TODO: Put this in a try except block to report errors
 
@@ -171,7 +186,7 @@ api.add_resource(ComplaintClassifier, '/api/')
 api.add_resource(PredictClass, '/api/predict-class')
 api.add_resource(GetVaccineDetails, '/api/get-vaccine-details') #idk why is this not working
 api.add_resource(GetClusters, '/api/get-clusters')
-api.add_resource(CasesUpdate, '/api/cases-update')
+api.add_resource(CasesUpdate, '/api/get-cases-update')
 
 @app.route("/")
 def index():
