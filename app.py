@@ -92,25 +92,25 @@ class ComplaintClassifier(Resource):
         return {"apis-available" : {
           "predict-class": {
             "method" : "GET",
-            "endpoint" : "https://capstone-classifier.herokuapp.com/api/predict-class",
+            "endpoint" : "https://smart-citizen-app.herokuapp.com/api/predict-class",
             "params": "text_query"
           },
 
           "get-vaccine-details": {
             "method" : "GET",
-            "endpoint" : "https://capstone-classifier.herokuapp.com/api/get-vaccine-details",
+            "endpoint" : "https://smart-citizen-app.herokuapp.com/api/get-vaccine-details",
             "params": ["district_id", "date"]
           },
 
            "get-cases-update": {
             "method" : "GET",
-            "endpoint" : "https://capstone-classifier.herokuapp.com/api/get-cases-update",
+            "endpoint" : "https://smart-citizen-app.herokuapp.com/api/get-cases-update",
             "params": None
           },
 
            "get-clusters": {
             "method" : "GET",
-            "endpoint" : "https://capstone-classifier.herokuapp.com/api/get-clusters",
+            "endpoint" : "https://smart-citizen-app.herokuapp.com/api/get-clusters",
             "params": "cluster_data"
           }
         }}
