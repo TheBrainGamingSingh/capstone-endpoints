@@ -185,6 +185,10 @@ class GetClusters(Resource):
         print(args)
         return {'cluster_data' : 'test'}
 
+
+
+
+
 api.add_resource(ComplaintClassifier, '/api/')
 api.add_resource(PredictClass, '/api/predict-class')
 api.add_resource(GetVaccineDetails, '/api/get-vaccine-details') #idk why is this not working
