@@ -72,43 +72,43 @@ def get_vaccine_details(district_id, query_date):
     except:
         return False
 
-def get_vaccine_details_using_selenium(district_id,date):
-    print('requesting using selenium')
-    req_url = BASE_URL.format(district_id,date)
-    from selenium import webdriver
-    import json
-    import time
-    import os
-    GOOGLE_CHROME_PATH = os.environ['GOOGLE_CHROME_BIN']
-    CHROMEDRIVER_PATH = os.environ['GOOGLE_CHROME_SHIM']
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument('--disable-gpu')
-    chrome_options.add_argument('--no-sandbox')
-    chrome_options.binary_location = GOOGLE_CHROME_PATH
-
-    # driver = webdriver.Chrome(execution_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
-    try:
-        print('initializing webdriver...')
-        driver = webdriver.Chrome(execution_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
-        driver.get(req_url)
-        pre = driver.find_element_by_tag_name("pre").text
-        time.sleep(2)
-    except:
-        print('retrying...')
-    finally:
-        driver.quit()
-
-    try:
-        resonse_data = json.loads(pre)
-        response_df = pd.DataFrame(resonse_data['sessions'])
-        response_df = response_df[COLUMNS]
-        response_df = response_df[response_df['available_capacity_dose1'] > 0]
-        response_df = response_df[response_df['available_capacity_dose2'] > 0]
-        response_df = response_df.sort_values(by='pincode')
-        res_output = response_df.to_dict(orient='records')
-        return {'details' : res_output}
-    except:
-        return False
+# def get_vaccine_details_using_selenium(district_id,date):
+#     print('requesting using selenium')
+#     req_url = BASE_URL.format(district_id,date)
+#     from selenium import webdriver
+#     import json
+#     import time
+#     import os
+#     GOOGLE_CHROME_PATH = os.environ['GOOGLE_CHROME_BIN']
+#     CHROMEDRIVER_PATH = os.environ['GOOGLE_CHROME_SHIM']
+#     chrome_options = webdriver.ChromeOptions()
+#     chrome_options.add_argument('--disable-gpu')
+#     chrome_options.add_argument('--no-sandbox')
+#     chrome_options.binary_location = GOOGLE_CHROME_PATH
+#
+#     # driver = webdriver.Chrome(execution_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
+#     try:
+#         print('initializing webdriver...')
+#         driver = webdriver.Chrome(execution_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
+#         driver.get(req_url)
+#         pre = driver.find_element_by_tag_name("pre").text
+#         time.sleep(2)
+#     except:
+#         print('retrying...')
+#     finally:
+#         driver.quit()
+#
+#     try:
+#         resonse_data = json.loads(pre)
+#         response_df = pd.DataFrame(resonse_data['sessions'])
+#         response_df = response_df[COLUMNS]
+#         response_df = response_df[response_df['available_capacity_dose1'] > 0]
+#         response_df = response_df[response_df['available_capacity_dose2'] > 0]
+#         response_df = response_df.sort_values(by='pincode')
+#         res_output = response_df.to_dict(orient='records')
+#         return {'details' : res_output}
+#     except:
+#         return False
 
 # end of utility fuctions
 
