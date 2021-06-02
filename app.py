@@ -87,6 +87,7 @@ def get_vaccine_details_using_selenium(district_id,date):
 
     # driver = webdriver.Chrome(execution_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
     try:
+        print('initializing webdriver...')
         driver = webdriver.Chrome(execution_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
         driver.get(req_url)
         pre = driver.find_element_by_tag_name("pre").text
