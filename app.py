@@ -78,8 +78,9 @@ def get_vaccine_details_using_selenium(district_id,date):
     from selenium import webdriver
     import json
     import time
-    GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
-    CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
+    import os
+    GOOGLE_CHROME_PATH = os.environ['GOOGLE_CHROME_BIN']
+    CHROMEDRIVER_PATH = os.environ['GOOGLE_CHROME_SHIM']
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument('--no-sandbox')
