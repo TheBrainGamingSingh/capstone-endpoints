@@ -44,7 +44,7 @@ HEADERS = {
 'referer': 'https://www.cowin.gov.in/',
 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36'
 }
-COLUMNS = ['vaccine','center_id', 'name','address','min_age_limit','pincode','available_capacity_dose1','available_capacity_dose2']
+COLUMNS = ['vaccine','center_id', 'name','address','min_age_limit','fee_type','pincode','available_capacity_dose1','available_capacity_dose2']
 
 
 with open(MODEL_PATH, 'rb') as file:
@@ -208,12 +208,12 @@ class GetVaccineDetails(Resource):
         res = get_vaccine_details(district_id,query_date)
         if res:
             return res
+        # else:
+        #     res = get_vaccine_details_using_selenium(district_id,query_date)
+        #     if res:
+        #         return res
         else:
-            res = get_vaccine_details_using_selenium(district_id,query_date)
-            if res:
-                return res
-            else:
-                return {'error' : 'No details found'}
+            return {'error' : 'No details found'}
 
 class CasesUpdate(Resource):
     def get(self):
