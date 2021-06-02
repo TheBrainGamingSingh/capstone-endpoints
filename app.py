@@ -57,18 +57,49 @@ def clean_and_stem(text):
     return [" ".join([stemmer.stem(i) for i in re.sub("[^a-zA-Z]", " ", x).split() if i not in words]).lower() for x in [text]]
 
 def get_vaccine_details(district_id, query_date):
+    print('requesting using urllib')
     req_url = BASE_URL.format(district_id,query_date)
     print(req_url)
     response = requests.get(req_url,headers=HEADERS)
     try:
         response_df = pd.DataFrame(response.json()['sessions'])
         response_df = response_df[COLUMNS]
-        res_output = response_df.to_dict(orient='index',)
+        response_df = response_df[response_df['available_capacity_dose1'] > 0]
+        response_df = response_df[response_df['available_capacity_dose2'] > 0]
+        response_df = response_df.sort_values(by='pincode')
+        res_output = response_df.to_dict(orient='records')
         return {'details' : res_output}
     except:
-        return {'error' : 'No details found',
-            'response': str(response.text)}
+        return False
 
+def get_vaccine_details_using_selenium(district_id,date):
+    print('requesting using selenium')
+    req_url = BASE_URL.format(district_id,date)
+    from selenium import webdriver
+    import json
+    import time
+
+    try:
+        driver = webdriver.Chrome(executable_path='./chromedriver')
+        driver.get(req_url)
+        pre = driver.find_element_by_tag_name("pre").text
+        time.sleep(2)
+    except:
+        print('retrying...')
+    finally:
+        driver.quit()
+
+    try:
+        resonse_data = json.loads(pre)
+        response_df = pd.DataFrame(resonse_data['sessions'])
+        response_df = response_df[COLUMNS]
+        response_df = response_df[response_df['available_capacity_dose1'] > 0]
+        response_df = response_df[response_df['available_capacity_dose2'] > 0]
+        response_df = response_df.sort_values(by='pincode')
+        res_output = response_df.to_dict(orient='records')
+        return {'details' : res_output}
+    except:
+        return False
 
 # end of utility fuctions
 
@@ -165,7 +196,15 @@ class GetVaccineDetails(Resource):
         if not district_id:
             district_id = 108 #Chandigarh's district ID
 
-        return get_vaccine_details(district_id,query_date)
+        res = get_vaccine_details(district_id,query_date)
+        if res:
+            return res
+        else:
+            res = get_vaccine_details_using_selenium(district_id,query_date)
+            if res:
+                return res
+            else:
+                return {'error' : 'No details found'}
 
 class CasesUpdate(Resource):
     def get(self):
